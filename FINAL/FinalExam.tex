@@ -1,0 +1,444 @@
+\documentclass[11pt]{article}
+\usepackage[margin=.6in,noheadfoot]{geometry} 
+\usepackage{latexsym,amsthm,latexsym,amssymb}
+\usepackage{amstext,amsfonts,amsmath,graphicx}
+\usepackage{paralist}
+\usepackage{xcolor}
+\newcommand\tab[1][1cm]{\hspace*{#1}}
+\pagestyle{empty}
+
+%% MISC DEFINITIONS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\qtrinfo}{CS181 Winter 2019}
+
+
+\newcommand{\nnote}[1]{{\color{red} N: #1}}
+\newcommand{\set}[2]{\{#1\ |\ #2\}}
+\renewcommand{\b}{\text{\textblank}}
+\newcommand{\code}[1]{\langle#1\rangle}
+\newcommand{\remove}[1]{}
+\newcommand{\totalpts}{?}
+\newcommand{\ecpts}{?}
+
+\newcommand{\points}[1]{(\textbf{#1 pts.})}
+\newcommand{\hint}[1]{{\small \textit{(Hint: #1)}}}
+
+\newtheorem{lemma}{Lemma}
+
+\newcommand{\header}{\clearpage
+\raggedleft{Name: \underline{\hspace{3in}} \\ \medskip
+Student ID: \underline{\hspace{3in}} \\ \medskip}
+\raggedright}
+
+\newcommand{\finalhead}[2]{
+\raggedleft{Name: \underline{\hspace{3in}} \\ \medskip
+Student ID: \underline{\hspace{3in}} \\ \medskip}
+\bigskip
+\center{\LARGE{\qtrinfo \ - Final}}
+\center{\Large{Due #2}}
+
+\raggedright
+\begin{itemize}
+	\item 
+	This exam is open-book and open-notes, but any materials not used in this course are prohibited, including any material found on the internet.  \textbf{Collaboration is prohibited.} Please avoid temptation by not working on the final while you are in the presence of any other student who has taken or is currently taking CS181. \textbf{Be extra careful if you live with or meet regularly with a student of this class.}  If you have any questions about the exam, ask the TA or Professor Sahai by email or after class.  \textbf{Do not ask other students.}  You are allowed to use any theorem shown in class or in the textbook, as long as you clearly cite it.  Please monitor Piazza for any clarifications.  \textbf{Do not} post any questions on piazza.
+	\item 
+	We suggest that you spend approximately 12 hours (not necessarily contiguous)
+	to take this exam. Start early so that you have time to understand and think
+	about the problems. \textbf{The solutions must be submitted on Gradescope by 11:59 PM
+	on Friday, March 15.} 
+	\item Place your name and UID on every page of your solutions. Retain this cover sheet and the next sheet with the table as the first pages of your solutions. \textbf{Please use separate pages for each question. All problems require clear and well-written explanations.}
+	\item There are 4 questions worth a total of 230 points and an extra credit question worth 40 points.
+	\item For each part  (except for the extra credit), if you describe a non-trivial approach that you tried using to solve the problem but realized it doesn't work and explain correctly why it doesn't work and then write \textquotedblleft I don't know\textquotedblright \, you will get 20\% points for 
+	that problem. You will \textbf{not} get 20\% points for just writing \textquotedblleft I don't know\textquotedblright. Whether your stated approach was indeed non-trivial is solely at the discretion of the grader. 
+	\item 5\% extra credit will be awarded to solutions written in \LaTeX.
+\end{itemize}
+
+
+\center{\fbox{\begin{minipage}{.98\textwidth}
+
+\bigskip
+Please \textbf{handwrite} the following honor code agreement and sign and date in the spaces provided. \\
+\textbf{Honor Code Agreement}: I promise and pledge my honor that during the exam period, 
+I did not and will not talk to any person about CS 181 material except for the professor or the TA, 
+nor will I refer to any material except for the class textbook and my own class notes. I will abide by the CS181 Honor Code.
+
+\vspace{-3mm}
+\underline{\hspace{\textwidth}}	
+\vspace{3mm}	
+\underline{\hspace{\textwidth}}	
+\vspace{3mm}	
+\underline{\hspace{\textwidth}}	
+\vspace{3mm}	
+\underline{\hspace{\textwidth}}	
+\vspace{3mm}	
+\underline{\hspace{\textwidth}}	
+\vspace{3mm}	
+\underline{\hspace{\textwidth}}	
+\vspace{3mm}	
+\underline{\hspace{\textwidth}}	
+\vspace{3mm}	
+\underline{\hspace{\textwidth}}	
+\vspace{3mm}		
+\raggedleft
+Signature: \underline{\hspace{3in}}
+
+\vspace{3mm}
+
+\raggedleft
+Date: \underline{\hspace{3in}}
+\bigskip
+\end{minipage}
+}	
+
+\raggedright
+\bigskip
+\begin{center}
+	\renewcommand{\arraystretch}{1}
+	\begin{tabular}{|c|c|c|} \hline
+		\textbf{Question} & \textbf{Points}& \\ \hline
+		1 & \hspace{1in} & \\ 
+		\ &\ &\ \\ \hline
+		2 & \ & \\ 
+		\ &\ &\ \\ \hline
+		3 & \ & \\ 
+		\ &\ &\ \\ \hline
+		4 & \ &  \\ 
+		\ &\ &\ \\ \hline
+		EC &\  & \\ 
+		\ &\ &\ \\ \hline
+		\textbf{Total} &\  & \hspace{1cm}\ \\ 
+		\ &\ &\ \\ \hline
+	\end{tabular}
+\end{center}
+
+}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\ql}{\textquotedblleft}
+\newcommand{\qr}{\textquotedblright}
+\newcommand{\kk}{\mathsf{k}}
+\newcommand{\M}{\mathsf{M}}
+\newcommand{\sL}{\mathsf{L}}
+\newcommand{\fin}{\mathsf{FIN,FIN}}
+\newcommand{\inff}{\mathsf{INF,INF}}
+\newcommand{\double}{\mathsf{UNREQUITED}}
+\newcommand{\doubleinf}{\mathsf{FOREVER-UNREQUITED}}
+\newcommand{\clone}{\mathsf{CLONE-SEEKER}}
+\newcommand{\pdf}[1]{
+\includepdf[pages=-]{pdf/#1.pdf} 
+}
+
+\newcommand{\image}[3]{
+\begin{center}
+	\includegraphics[scale = #2]{pics/#1} 
+	\captionof{figure}{#3}
+	\label{#1}
+\end{center}
+}
+
+\newcommand{\floor}[1] {
+\left\lfloor #1 \right\rfloor
+}
+
+\newcommand{\ceil}[1] {
+\left\lceil #1 \right\rceil
+}
+
+\newcommand{\fpart}[1] {
+\left\{ #1 \right\}
+}
+
+\DeclareMathOperator{\ch}{char}
+
+\newcommand{\abs}[1]{\left\vert #1\right\vert}
+
+\newcommand{\R}{\mathbb{R}}
+
+\newcommand{\N}{\mathbb{N}}
+
+\newcommand{\Z}{\mathbb{Z}}
+
+\newcommand{\Q}{\mathbb{Q}}
+
+\newcommand{\F}{\mathbb F}
+
+\newcommand{\V}{\mathcal V}
+\newcommand{\C}{\mathbb C}
+
+\newcommand{\aut}{\mathsf {Aut}}
+\newcommand{\gal}{\mathsf {Gal}}
+
+\newcommand{\on}{\mathsf{ON}}
+\newcommand{\off}{\mathsf{OFF}}
+\newcommand{\height}{\mathsf{height}}
+\newcommand{\Trump}{\mathsf{Trump}}
+\newcommand{\cohalt}{\mathsf{co-Halt}}
+\newcommand{\Empty}{\mathsf{Empty}}
+\newcommand{\halt}{\mathsf{Halt}}
+\newcommand{\Loop}{\mathsf{loop}}
+
+\begin{document}
+{\finalhead{4}{Friday, March 15, 11:59 PM}}
+
+
+
+
+
+
+
+%---------------------------------------------------------------------------------------------------
+
+\newpage
+\paragraph{Problem 1}
+\subparagraph{(a)}
+Intuition: To prove undecidability, the most straightforward way is to build a Turing Machine that can cause a contradiction using recursion theorem. \\
+
+Assume there is a Turing Machine $M$ that decides $L_{height}$. We can build a Turing Machine $F$ in the following way: \\~\\
+$F=$ "On input $w$:"
+\begin{itemize}
+\item Obtain, via the recursion theorem, own description $<F>$ 
+\item  Run $M$ on input $<F>$ 
+\item if $M$ accepts: \\
+\tab reject $w$ \\
+if $M$ rejects: \\
+\tab accept $w$
+\end{itemize}
+
+Hence, there are two cases: \\
+
+Case 1: $F$ accepts all $w \in \Sigma^*$. This happens when $M$ rejects on input $<F>$. Hence, since $|M| \geq 1$, there exists $w \leq |M|$ which is a contradiction, since height($M$) $\leq |M|$. \\
+
+Case 2: $F$ rejects all $w \in \Sigma^*$. This happens when $M$ accepts on input $<F>$. Hence, since $|M|$ is finite, height($F$) = $\infty > |M|$, which is a contradiction. \\
+
+Hence, the construction of $F$ proves the undecidability of $L_{height}$
+
+\subparagraph{(b)}
+Intuition: we can construct a TM that recognizes $L_{height}$ by enumerate all the strings with length smaller than the length of the TM description. The actual construction is similar to the proof of co-recognizability of $E_{TM}$. \\~\\
+
+Since the alphabet $\Sigma$ and the length of the input TM is finite, there are a finite number of possible input strings with length smaller than $|M|$ for the TM $M$. Thus, we can run all of them in the recognizer to see if any of them accepts. If any of them is accepted, then $M \in L_{height}$. However, one problem is, if one of the strings causes the recognizer to loop forever, it will never have the chance to run the next string. To avoid this problem, we can build a recognizer $R$ in this way: \\
+
+$R=$ "On input $<M>$, where $M$ is a TM:"
+\begin{itemize}
+\item Repeat the following for $i = 1,2,3,...$
+\item  Run $M$ for $i$ steps for each of possible input strings with length smaller than $|M|$ (we have stated above the set of  input strings is finite).
+\item if any of the computations is accepted, accept 
+\end{itemize}
+
+Thus, this recognizer will either accept, all go on looping for increasing $i$.
+
+\subparagraph{(c)}
+Intuition: To prove undecidability, the most straightforward way is to build a Turing Machine that can cause a contradiction using recursion theorem. \\
+
+Assume there is a Turing Machine $M$ that decides $L_{Trump}$. We can build a Turing Machine $F$ in the following way: \\~\\
+
+$F=$ "On input $x$:"
+\begin{itemize}
+\item Obtain, via the recursion theorem, own description $<F>$ 
+\item  Run $M$ on input $<F>$ 
+\item if $M$ accepts: \\
+\tab loop \\
+if $M$ rejects: \\
+\tab erase all \$ symbol, write a wall symbol \#, and accept
+\end{itemize}
+
+Hence, there are two cases: \\
+
+Case 1: When $M$ accepts on input $<F>$. The TM $F$ we constructed will loop for all input $x \in \Sigma^*$ , which is a contradiction. \\
+
+Case 2: When $M$ rejects on input $<F>$. The TM $F$ we constructed will replace all \$ symbol with a single \# symbol and halt by accepting for all input $x \in \Sigma^*$ (including all the $x$ that contains at least 5.7 billion \$'s). This is a contradiction, as in this case, $F$ is a Trump Machine. \\
+
+Hence, the construction of $F$ proves the undecidability of $L_{Trump}$
+
+\subparagraph{(d)}
+Intuition: We can construct a valid Trump Machine $T$, and assume there exists a recognizer $R$ that recognizes $L_{Trump}$. We then construct a Trump Machine $M$ that will induce a contradiction. \\~\\
+
+$T=$ "On input $x$:"
+\begin{itemize}
+\item Scan from the start, erase all \$ symbols, write a wall symbol \# at the end
+\item accept
+\end{itemize}
+
+From the construction, we can see that for all input $x \in \Sigma^*$ (including those with at least 5.7billion \$), $T$ replaces all \$ with a single \# and then halts. Hence, $T$ is a Trump Machine by definition, and $T$ always halts. \\~\\
+
+$F=$ "On input $x$:"
+\begin{itemize}
+\item Obtain, via Recursion Theorem, own description $<F>$
+\item Run $R$ on input $<M>$ and $T$ on input $x$ in parallel
+\item if $R$ returns first: \\
+\tab if $R$ accepts \\
+\tab \tab loop forever \\
+\tab if $R$ rejects \\
+\tab \tab  wait for $T$ to halt. Return $T(x)$. 
+\item if $T$ returns first: \\
+\tab  Return $T(x)$
+\end{itemize}
+
+There are two cases: \\
+
+Case 1: $R$ finishes first. If $R$ accepts, $F$ never halts, which contradicts the definition of Trump Machine. If $R$ rejects, $F$ waits $T$ to finish. Since $T$ is a valid trump machine, $F$ does all the actions required by a Trump Machine and then halts, which contradicts to the result of $R$. \\
+
+Case 2: $T$ finishes first, $F$ behaves as if it is a valid Trump Machine. There are again two subcases: If $R$ is looping, it is a contradiction since $R$ should accept $F$ as a valid Trump Machine. If $R$ is not looping, it will eventually halt. Since $x$ can be any string $\in \Sigma^*$, when $x$ is long enough, $T$ will finish later then $R$. This will lead to contradiction as stated in Case 1. \\
+
+Hence, we have proved the unrecognisability of $L_{Trump}$ by contradiction. \\
+\newpage
+\paragraph{Problem 2}
+\subparagraph{(a)}
+Intuition: All languages contain at most $\infty$ strings \\
+
+We can build a Turing machine $M$:\\~\\
+M= "On input $x$, where $x \in \Sigma^*$:" \\
+\tab Halt and output "INCONCLUSIVE" \\
+
+Since this Turing Machine can be applied to any language, every language is $\infty$-Inconclusive-Decidable.
+
+
+\subparagraph{(b)}
+Intuition: we can prove this by constructing 2 Turing Machine $F_1$ and $F_2$ that prove the 1-Inconclusive-Undecidability of $L_{{HALT}_{\epsilon}}$. The descriptions $<F_1>$ and $<F_2>$ are two inputs that must be marked as "INCONCLUSIVE" by the decider.  \\
+
+Assume there is a Turing Machine $M$ that 1-Inconclusive-Decides $L_{{HALT}_{\epsilon}}$. We can build 2 Turing Machine $F_1$ and $F_2$ in the following way: \\~\\
+$F_1=$ "On input $w$:" 
+\begin{itemize}
+\item Obtain, via the recursion theorem, own description $<F_1>$ 
+\item  Run $M$ on input $<F_1>$ 
+\item if $M$ accepts: \\
+\tab loop forever \\
+if $M$ rejects: \\
+\tab accept $w$ \\
+if $M$ says "INCONCLUSIVE", \\
+\tab accept $w$
+\end{itemize}
+
+$F_2=$ "On input $w$:" 
+\begin{itemize}
+\item Obtain, via the recursion theorem, own description $<F_2>$ 
+\item  Run $M$ on input $<F_2>$ 
+\item if $M$ accepts: \\
+\tab loop forever \\
+if $M$ rejects: \\
+\tab reject $w$ \\
+if $M$ says "INCONCLUSIVE", \\
+\tab reject $w$
+\end{itemize}
+
+Hence, there are 3 cases: \\
+
+Case 1: when $M$ accepts, both machines loop forever for any input $w$ including $\epsilon$ which is a contradiction .\\
+
+Case 2: when $M$ rejects, both machines halt for any input $w$ including $\epsilon$ which is a contradiction .\\
+
+Case 3: Hence, in order not to contradict, $M$ can only output "inconclusive" for both descriptions. At this time, $L{F_1} = \Sigma*$ while $L_{F_2} = \varnothing$. Hence, $<F_1> \neq <F_2>$. Hence, $L_{{HALT}_{\epsilon}}$ is not 1-Inconclusive-Decidable, which is a contradiction. \\
+
+Hence, we proved the 1-Inconclusive-Undecidability of $L_{{HALT}_{\epsilon}}$.
+\newpage
+
+\subparagraph{(c)}
+Intuition: Use the method we used for the first problem, we can construct a third TM $F_3$ that induces contradiction, but is different from $F_1$ and $F_2$. 
+
+Assume there is a Turing Machine $M$ that 2-Inconclusive-Decides $L_{{HALT}_{\epsilon}}$. We can construct $F_1$ and $F_2$ in exactly the same say as we did above. We can construct $F_3$ in the following way: \\~\\
+$F_3=$ "On input $w$:" 
+\begin{itemize}
+\item Obtain, via the recursion theorem, own description $<F_3>$ 
+\item  Run $M$ on input $<F_3>$ 
+\item if $F$ accepts: \\
+\tab loop forever \\
+if $M$ rejects: \\
+\tab reject $w$ \\
+if $M$ says "INCONCLUSIVE", \\
+\tab accept $w$ if $|w| > 1$. 
+\end{itemize}
+
+Hence, there are 3 cases, and the above first 2 apply: \\
+
+Case 3: In order not to contradict, $M$ can only output "inconclusive" for $<F_3>$. However, since $L(F_3) \neq \varnothing$ and $L(F_3) \neq \Sigma*$, the three TM are different in descriptions. Hence, $L_{{HALT}_{\epsilon}}$ is not 2-Inconclusive-Decidable, which is a contradiction.
+\newpage
+
+\paragraph{Problem 3}
+\subparagraph{(a)}
+Intuition: To show that $L_{loop}$ is computable by perpetual machines, we can construct a perpetual machine by adding an extra non-halting accept state $q^*$, and make the machine enters it infinitely many times if it loops.\\
+
+We construct $P$ such that it resembles $M$, the only difference is $P$ has an extra non-halting accept state $q^*$. Before each state transition in $M$ from $q_i$ to $q_j$, $P$ must enter $q^*$ before entering $q_j$. For the accept and reject states of $M$, $P$ just keep looping in the same state.
+
+$P=$ "On input $<M>$, where $M$ is a TM:"
+\begin{itemize}
+\item Simulate $M$ on input $\epsilon$, before each state transition, $P$ goes into $q^*$ before entering the next state.
+\item if enter the accept/reject states of $M$, keep looping in the same state.
+\end{itemize}
+
+Thus, if $M$ loops on input $\epsilon$, $M$ has infinitely state transitions (including transitions into the same state). By our construction, this will lead $P$ to enter $q^*$ infinitely many times. If $M$ halts on input $\epsilon$, $M$ has finitely state transitions (including transitions into the same state). This will lead $P$ to enter $q^*$ finitely many times, then $P$ will loop in the accept/reject states. Hence, we proved $P$ computes $L_{loop}$.
+
+\subparagraph{(b)}
+Intuition: Since Perpetual machine, like TM, have a description of finite length. Also, we learnt that we can enumerate of the strings $\in \Sigma^*$. We can enumerate all the perpetual machines in the order of the enumerations of strings, and use diagonalization to induce a contradiction. \\
+
+Let $\mathcal{B}$ denote the given enumeration of all strings $\in \Sigma^*$. For each element in $\mathcal{B}$, if it is accepted by a perpetual machine $P$ (go into $q^*$ infinitely many times), we record as $1$, otherwise we record as $0$. Thus, we can get an infinitely long characteristic sequence for each of the perpetual machine. Then we used Cantor’s Diagonalization to produce a contradiction by enumerating all the perpetual machines as stated in the Intuition, and construct a language $L$ with a characteristic sequence that has $i$th entry opposite to the $i$th entry of $P_i$'s characteristic sequence.\\
+
+The construction is as follows, $s_1,s_2,...$ is an enumeration of all strings $\in \Sigma^*$, denoted by $\mathcal{B}$, and $P_1, P_2, ...$ is an enumeration of all descriptions of perpetual machines following the order in $\mathcal{B}$. (with only strings that happen to be descriptions of perpetual machines listed):
+
+\begin{center}
+\begin{tabular}{ c c c c}
+ 	   & $s_1$ & $s_2$ & $s_3$ ...\\ 
+ $P_1$ & \textbf{1} & 0 & 1...\\  
+ $P_2$ & 1 & \textbf{0} & 0 ... \\
+ $P_3$ & 0 & 1 & \textbf{1} ... \\
+ ...& ...   & ...   & ...
+\end{tabular}
+\end{center}
+
+According to our construction $L$ has characteristic sequence $\overline{101...} = 010...$. Assume $L$ is computable by a perpetual machine, all the strings $\in L$ must be accepted by a perpetual machine (go into $q^*$ infinitely many times). Thus, there exists a $P_l$ that has a characteristic sequence we same as $L$. However, according to our construction, such $P_l$ does not exist because it is not the same (has different characteristic sequence from) as any  perpetual machine $p$ in the list because for any $p_i$, $p_l$ and $p_i$ differs in the $i$th position. Hence, we have proved $L \in \Sigma^*$ is not computable by perpetual machines.
+\newpage
+\subparagraph{(c)}
+Intuition: we have learnt in class that the set of all strings in $\Sigma^*$ is countable. Let $\mathcal{B}$ be a given enumeration of strings in $\Sigma^*$ as shown in Q3, HW4. We then use the same method we used in 1(b), and similar construction that we used in part (a) to prove. \\
+
+We construct $P$ such that it resembles $M$, the only difference is $P$ has an extra non-halting accept state $q^*$. Before each state transition in $M$ from $q_i$ to $q_j$, $P$ must enter $q^*$ before entering $q_j$. For the accept and reject states of $M$, $P$ just keep looping in the same state.\\
+
+$P=$ "On input $<M>$, where $M$ is a TM:"
+\begin{itemize}
+\item Repeat the following for $i = 1,2,3,...$
+\item Run for $2i$ steps for the first $i$ strings in the enumeration $\mathcal{B}$
+\item if enter the accept states of $M$, keep looping in the same state without proceed to the next string
+\end{itemize}
+
+Therefore, if $<M> \in L_{empty}$, $P$ will never enter the accept states of $M$, and $M$ has infinitely state transitions (including transitions into the same state) for any string $\in \Sigma^*$. This will lead $P$ to enter $q^*$ infinitely many times (due to infinitely increasing $i$). if $<M> \not \in L_{empty}$, say $M$ accept a string $s$, this will lead $F$ to run only finite many steps before entering the accept state. After entering the accept state, $F$ never enters $q^*$ again. Thus, this will lead $P$ to enter $q^*$ finitely many times. Hence, we proved $P$ computes $L_{empty}$.
+\subparagraph{(d)}
+Intuition: Again we let $\mathcal{B}$ be a given enumeration of strings in $\Sigma^*$ as shown in Q3, HW4. If $L(M_1) \neq L(M_2)$, there must be a first string that is accepted by one that is not accepted by the other. Since the string is accepted by one, it only runs a finite many steps on one of the machines. We can make use of that. We use a similar method we used in the previous part. \\
+
+We construct $P$ such that it has all the states in $M_1$ and $M_2$, and an extra non-halting accept state $q^*$. Before each state transition in $M_1/M_2$ from $q_i$ to $q_j$, $P$ must enter $q^*$ before entering $q_j$. For the accept and reject states of $M$, $P$ just keep looping in the same state.\\
+
+$P=$ "On input $<(M_1,M_2)>$, where $M_1/M_2$ are TM:"
+\begin{itemize}
+\item Repeat the following for $i = 1,2,3,...$
+\item Run for $2i$ steps for the first $i$ strings in the enumeration $\mathcal{B}$ for both $M_1/M_2$ part.
+\item if enter the accept states of $M_1/M_2$, Simulate the string on the other machine(The actual $M_1/M_2$ without $q^*$) until going into an accept state. If go into accept state, continue with the next string and increasing $i$. Otherwise loop forever or loop in the reject state.
+\end{itemize}
+
+If a string is accept by a machine with $i$ step of simulation. Before this event, we only go into $q^*$ finitely many times. Then we simulate the other machine with the string until we go into an accept state. Hence, there are 2 cases:\\
+
+Case 1: If the string is accept by the other string, then we continue with the second step with increasing $i$. If it is always the case. The execution goes on forever and we go into $q^*$ infinitely many times, which means $(<M_1>,<M_2>) \in L_{EQ}$.\\
+
+Case 2: If the string is rejected/loops forever. We loop in the reject state/continue looping, and thus the number of times of entering $q^*$ will never increase again. Thus, we only enter $q^*$ finitely many times (the number of times before the string is accepted in $i$ steps by the other machine). This means  $(<M_1>,<M_2>) \not \in L_{EQ}$.\\
+
+Hence, we constructed $P$ as desired, which shows $L_{EQ}$ is computable by perpetual machines.
+
+\newpage
+\paragraph{Problem 4}
+Intuition: the layout of the game reminds me of tape of TM. Also, the unique Ace Deck in the front reminds me of the head of tape. The position of the Ace deck can be used to indicate the current position of the head. The rest of the deck can be used to indicate the current state of a TM. For the normal deck, we can use it to indicate the alphabets of TM. Hence, with all the above ideas, we are able to simulate the transition function function of a TM $\delta$ by only allowing shuffling of $3N$ cards. We will use mapping reducibility ideas to reduce the problem to the undecidable $L_{{HALT}_{\epsilon}}$ defined in Problem 2. \\
+
+Since in the problem, there is a statement saying we can assume "that every TM can be converted into an equivalent TM that will never try to move left on the leftmost tape position, and if this new TM halts, it always halts when the head is at the leftmost tape position.", we can assume the input $M$ is already such a TM for clarity.\\
+
+Assume the input $<M>$ where $M$ is a TM description input for $L_{{HALT}_{\epsilon}}$, assume it has $p$ states and $q$ different alphabets. We can choose the number of $N$ so that $N! > q$ and $(N-1)! > p$. Thus, each state can have a unique representation by cards $2$ to $N$ in the Ace Deck, and each alphabet can have a unique representation by a Normal Deck.\\
+
+Assume the input $<M>$ has a transition function: $\delta(q,a) = (r,b,\{L,R\})$, where $a,b \in \Gamma$, $q,r \in Q$, ${L,R}$ indicates the direction of the head move. We can simulate the transition function by only including the following shufflings. However, before go into details, I want to talk about how to use always make sure we can do shufflings of 3 decks without mixing up of cards originally from different decks. We have to make sure this because if mixed up, for example for a Normal deck, we cannot interpret its content as an alphabet of $M$. The idea is the Ace deck's position can be indicated by the leading $A$. Thus, the $A$ and the following $A-1$ cards are from the original Ace deck. The Normal Deck just on the left of the Ace deck represents the tape position that the head is pointing to and the Normal Deck just on the right of the Ace deck represents the tape position that is just to the right of the current head position. The shuffling rules corresponding to the TM $M$ will only include shuffling of $3N$ cards. Each left element of the tuple have the $(N+1)_{th}$ element is $A$, or have the $(2N+1)_{th}$ element as $A$, indicating we are trying to do a $R/L$ movement of head. The right element of the tuple, will only have $A$ as the $(N+1)_{th}$ element, or $(2N+1)_{th}$ element, indicating result of a $L/R$ movement of head. Also, for both left/right element of the tuple, it has exactly $3N$ cards, and each $N$ cards must be exactly a Normal or Ace deck. The only exceptions are when we read in the $\epsilon$ which has never been processed before (the TM $M$ starts from a blank tape)/move the head to a tape position with a blank symbol, which is described below. A formal definition of the transition function $\delta$ is as follows: \\~\\
+
+$\delta$'s representation by shuffling rule=
+\begin{itemize}
+\item $\delta(q,a) \rightarrow (r,b,L)$ = $((\overline{NNA}),(\overline{NAN}))$, where $A$ is an Ace deck that starts with an $A$. This allows us to always make sure that the only $A$ is at $(kN+1)th, k \in \mathbf{N}$ position among all the cards, thus allowing us to locate each deck of cards with $N$ cards inside, and each deck contains exactly all the cards of a Normal/Ace deck. The $N$ in the rule represents a full Normal deck in any order that is a representation of a alphabet. Thus, we never mix up cards from 2 different decks.
+\item $\delta(q,a) \rightarrow (r,b,R)$ = $((\overline{NAN}),(\overline{NNA}))$, with the same representation as stated above. Also, when the Ace Deck is the last deck, add a Normal deck in the end so that we are still possible to move the head further to right.
+\item $((\overline{Ann}),(\overline{\epsilon An}))$: \textbf{The symbol $n$ represents a Normal deck with original arrangement, which represents the blank symbol $\sqcup$ in our construction.} When we read the input alphabet $\epsilon$ we first add a new Normal deck at the end before we do the shuffling. 
+\item $\delta(q,a) = (q_{halt},b,L)$: This is always a left movement since the TM will only halt when the head is at the leftmost tape position and will never go beyond the leftmost position of the tape. For this case, all the alphabet $b$ that can satisfy this transition, we represent it by a Normal deck arrangement starting with $N$.          
+\end{itemize}
+
+Hence, we have given and explained how the shuffling rules with $3N$ cards are constructed. Now we go on to map the rest of the TM to the card shuffling game.\\
+
+The game can only start with rule 3 since the Ace deck is originally the first deck, which we read in the $\epsilon$ symbol by adding a new Normal deck and shuffle the first three decks. Then we follow the transitions function of the Turing machine. If we can win the card game, that means we the Ace deck is the second deck (pointing to the leftmost position), and the first deck is representing the $b$ in rule 4, which starts with $N$. Hence, we have constructed a card game to simulate $L_{{HALT}_{\epsilon}}$. If we can decide if the card game is winable $\Rightarrow$ we can decide $L_{{HALT}_{\epsilon}}$. However, this is a contradiction because we know it is undecidable, or we cannot prove in Problem 2 that it is not 1-Inconclusive Decidable.
+
+
+\end{document}

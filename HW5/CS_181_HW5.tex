@@ -1,0 +1,137 @@
+\documentclass[12pt]{article}
+\usepackage{fullpage,latexsym,amsthm,latexsym,amssymb}
+\usepackage{amstext,amsfonts,amsmath,graphicx}
+\usepackage{multicol}
+\usepackage[usenames,dvipsnames]{color} 
+\usepackage{hyperref}
+
+\oddsidemargin = -0.5 in
+\addtolength{\textwidth}{0.8in}
+\addtolength{\textheight}{0.2in}
+
+%% Theorem statements %% 
+% THEOREMS -------------------------------------------------------
+\newtheorem{theorem}{Theorem}[section]
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\numberwithin{equation}{section}
+%% MISC DEFINITIONS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\ignore}[1]{}
+
+\newcommand{\abi}[1]{\textcolor{Red}{#1}}
+\newcommand{\qtrinfo}{CS181 Winter 2019}
+\newcommand{\remove}[1]{}
+\newcommand{\headnote}{
+%\begin{multicols}{2}\small
+\begin{itemize}
+
+\item This homework is {\bf OPTIONAL}. If completed, it can only help increase your overall homework score. Although this homework is optional, we encourage everyone to look at and attempt the problems as they will be good practice for the final.
+
+\item Please write your student ID \textbf{and the names of anyone you collaborated with} in the spaces provided and attach this sheet to the front of your solutions. \textbf{Please do not include your name anywhere since the homework will be blind graded.}
+\item An extra credit of \textbf{5\%} will be granted to solutions written using \LaTeX. Here is one place where you can create \LaTeX documents for free: \url{https://www.overleaf.com/}. The link also has tutorials to get you started. There are several other editors you can use.
+\item If you are writing solutions by hand, please write your answers in a neat and readable hand-writing.
+\item Always explain your answers. When a proof is requested, you should provide a rigorous proof.
+\item If you don't know the answer, write ``I don't know'' along with a clear explanation of what you tried. For example: ``I couldn't figure this out. I think the following is a start, that is correct, but I couldn't figure out what to do next. [[Write down a start to the answer that you are sure makes sense.]] Also, I had the following vague idea, but I couldn't figure out how to make it work. [[Write down vague ideas.]]'' At least 20\% will be given for such an answer.
+
+Note that if you write things that do not make any sense, no points will be given.
+\item The homework is expected to take anywhere between 8 to 14 hours. You are
+advised to start early.
+\item Submit your homework online on Gradescope. 
+\end{itemize}
+%\end{multicols}
+}
+
+\newcommand{\code}[1]{\langle #1 \rangle}
+
+\newcommand{\dnc}{certified}
+\newcommand{\inp}{\ensuremath{\epsilon}}
+
+
+
+\newcommand{\hwhead}[2]{
+	\raggedleft{Student ID: \underline{\hspace{1.2in}304990072\hspace{1.25in}} \\ \medskip
+              Collaborators: \underline{\hspace{3in}} \\ \medskip}
+  \bigskip
+  \begin{center}
+  	{\LARGE{\qtrinfo \ -- Problem Set #1}}\\[0.3cm]
+  	{\Large{Due #2}}
+  \end{center}
+  \bigskip
+  \raggedright
+  \headnote
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\addtolength{\topmargin}{-1cm}
+\addtolength{\textheight}{2cm}
+
+%\newcommand{\sbset}{\ensuremath{SUBSET_{TM}}}
+\newcommand{\sbset}{\mathsf{SUBSET}_{\mathsf{TM}}}
+
+\newcommand{\PDA}{\mathsf{PDA}}
+
+\begin{document}
+\hwhead{5}{Friday, March 8, 11:59 PM}
+\newpage
+\paragraph{Problem 1}
+\subparagraph{}
+We follow what the textbook does in Section 5.30 to prove the statement: we prove $A_{TM} \leq_m \overline{COMPL_{TM}}$. THis is equivalent to $\overline{A_{TM}} \leq_m COMPL_{TM}$. Since in the textbook we have show $\overline{A_{TM}}$ is Turing-unrecognisable, by Corollary 5.29, $COMPL_{TM}$ is Turing-unrecognisable. The reducing function $f$ works as follows (In the textbook, $A_{TM}=\{<M,w>|M$ is a TM and $M$ accepts $w\}$ ): \\~\\
+
+$F=$ "On input $<M,w>$, where $M$ is a TM and $w$ a string:"
+\begin{itemize}
+\item Construct the following two machines, $M_1$ and $M_2$: \\
+$M_1$: Reject on any input \\
+$M_2$: Run $M$ on $w$, if it accepts, reject
+\item Output $<M_1,M_2>$
+\end{itemize}
+Thus, $M_1$ accepts nothing, If $M$ accepts $w$, $M_2$ also accepts nothing, hence $L(M_1) \neq \overline{L(M_2)}$. Conversely, if $M$ does not accept $w$, $M_2$ accepts everything, hence $L(M_1) = \overline{L(M_2)}$. Thus $f$ reduces $A_{TM}$ to $\overline{COMPL_{TM}}$.
+
+\newpage
+
+\paragraph{Problem 2}
+\subparagraph{} In the textbook, we have proved $E_{TM}=\{<M,w>|M$ is a TM and $L(M)=\varnothing\}$ is undecidable. We let $R$ decide $SUBSET_{TM}$ and construct TM $S$ to decide $E_{TM}$ as follows: \\~\\
+
+$S=$ "On input $<M>$, where $M$ is a TM:" \\
+\begin{itemize}
+\item Run $R$ on input $<M,M_1>$, where $M_1$ is a Tm that rejects all inputs.
+\item if $R$ accepts, accept, if $R$ rejects, reject.
+\end{itemize}
+
+If $R$ decides $SUBSET_{TM}$, it decides $E_{TM}$ (because if $L(M) \subset L(M_1)=\varnothing, L(M)= \varnothing $). However, since $E_{TM}$ is undecidable, $SUBSET_{TM}$ must be undecidable.
+
+\newpage
+\paragraph{Problem 3}
+\subparagraph{(a)} 
+We can define the certificate $y$ for a $N \in HALT_{\epsilon}$ as follows: when $N$ gets a input $\epsilon$, each transition will be recorded as $1$. Then we define $M$ as follows: \\~\\
+
+$M=$ "On input $(<N>,y)$, where $M,N$ are TM:"
+
+\begin{itemize}
+\item process $<N>$ and $y$ in parallel: \\
+simulate $N$ with input $\epsilon$, for each transition, remove/mark the first $1$ in $y$ that has not been removed/marked
+\item if reach the end of $y$, and $N$ is in an accept state, accpet. Otherwise reject.
+\end{itemize}
+Hence, for all $N \in HALT_{\epsilon}$, there exists a qualified $y$. For all $N \not \in HALT_{\epsilon}$, the qualified $y$ is infinitely long. Hence, any input $(<N>,y)$ would be rejected.
+
+\subparagraph{(b)} 
+This is because the above method cannot find a proper input to feed in $N$ in order to find a qualified certificate. Any input chosen can only prove $N$ halts on a particular input/inputs. Since there are infinitely many possible inputs, even if such a machine defined by the above method accepts, we cannot conclude that $N$ halts for all inputs.
+
+\subparagraph{(c)}
+If $HALT_{all}$ is a certified language, there exists s a Turing machine $M$ satisfying the conditions specified in the problem. \\~\\
+We can construct a machine $B$ that takes in input $x \subseteq \{0,1\}^*$ as follows: \\~\\
+$B=$ "On input $x$: \\
+
+\begin{itemize}
+\item By recursion theorem, let $<B>$ be a description of $B$ 
+\item Run $M(B,x)$ \\
+if $M$ accepts, loop forever \\
+if $M$ rejects, halt.
+\end{itemize}
+Thus, when $M$ accepts, $B$ actually never halts, which is a contradiction. When $M$ rejects, there are two situations: \\
+ \begin{itemize}
+\item if $B \not \in HALT_{all}$, there is no such $x$ that can make $M$ accept and halt, and $B$ halts on all input, a contradiction.
+\item if $B \in HALT_{all}$, that means $x$ is not the certificate. However, if $x$ is the certificate, this falls in the situation when $B$ loops, which is still a contradiction.
+\end{itemize}
+Hence, our construction proves $HALT_{all}$ is not a certified language.
+\end{document}

@@ -1,0 +1,154 @@
+\documentclass[12pt]{article}
+\usepackage{fullpage,latexsym,amsthm,latexsym,amssymb}
+\usepackage{amstext,amsfonts,amsmath,graphicx}
+\usepackage{multicol}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{hyperref}
+
+\oddsidemargin = -0.5 in
+\addtolength{\textwidth}{0.8in}
+\addtolength{\textheight}{0.2in}
+
+%% Theorem statements %%
+% THEOREMS -------------------------------------------------------
+\newtheorem{theorem}{Theorem}[section]
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\numberwithin{equation}{section}
+%% MISC DEFINITIONS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\ignore}[1]{}
+
+\newcommand{\abi}[1]{\textcolor{Red}{#1}}
+\newcommand{\qtrinfo}{CS181 Winter 2019}
+\newcommand{\remove}[1]{}
+\newcommand{\headnote}{
+%\begin{multicols}{2}\small
+\begin{itemize}
+\item Please write your student ID \textbf{and the names of anyone you collaborated with} in the spaces provided and attach this sheet to the front of your solutions. \textbf{Please do not include your name anywhere since the homework will be blind graded.}
+\item An extra credit of \textbf{5\%} will be granted to solutions written using \LaTeX. Here is one place where you can create \LaTeX documents for free: \url{https://www.overleaf.com/}. The link also has tutorials to get you started. There are several other editors you can use.
+\item If you are writing solutions by hand, please write your answers in a neat and readable hand-writing.
+\item Always explain your answers. When a proof is requested, you should provide a rigorous proof.
+\item If you don't know the answer, write ``I don't know'' along with a clear explanation of what you tried. For example: ``I couldn't figure this out. I think the following is a start, that is correct, but I couldn't figure out what to do next. [[Write down a start to the answer that you are sure makes sense.]] Also, I had the following vague idea, but I couldn't figure out how to make it work. [[Write down vague ideas.]]'' At least 20\% will be given for such an answer.
+
+Note that if you write things that do not make any sense, no points will be given.
+\item The homework is expected to take anywhere between 8 to 14 hours. You are
+advised to start early.
+\item Submit your homework online on Gradescope. 
+\end{itemize}
+%\end{multicols}
+}
+
+\newcommand{\hwhead}[2]{
+	\raggedleft{Student ID: \underline{\hspace{1.2in}304990072\hspace{1.25in}} \\ \medskip
+              Collaborators: \underline{\hspace{3in}} \\ \medskip}
+  \bigskip
+  \begin{center}
+  	{\LARGE{\qtrinfo \ -- Problem Set #1}}\\[0.3cm]
+  	{\Large{Due #2}}
+  \end{center}
+  \bigskip
+  \raggedright
+  \headnote
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\addtolength{\topmargin}{-1cm}
+\addtolength{\textheight}{2cm}
+
+\newcommand{\sbset}{\ensuremath{SUBSET_{TM}}}
+
+\newcommand{\PDA}{\mathsf{PDA}}
+
+\begin{document}
+\hwhead{4}{Tuesday, February 26, 11:59 PM}
+
+\newpage
+
+\paragraph{Problem 1}
+\subparagraph{} We first prove that $(x,y)$ has a size equal to $\mathbb{N}$. We use the same approach as have we prove $|\mathbb{Q}| = |\mathbb{N}|$.
+\begin{center}
+\begin{tabular}{ c c c }
+ (0,0) & (0,1) & (0,-1) ...\\ 
+ (1,0) & (1,1) & (1,-1) ...\\  
+ (-1,0) & (-1,1) & (-1,-1) ... \\
+ ...   & ...   & ...
+\end{tabular}
+\end{center}
+
+Thus, any $(x,y),\ x,y \in \mathbb{Z}$ is represented by the entry on the $2x$th/$(2x+1)$th row (for positive/non-positive $x$),    $2y$th/$(2y+1)$th column (for positive/non-positive $y$). Again we turn the matrix into a list by listing the elements on the diagonals, as we did in proving $|\mathbb{Q}| = |\mathbb{N}|$ in the textbook. The $k$th element in the list corresponds to number $k \in \mathbb{N}$. Thus, we proved there exists a bijection between $(x,y),\ x,y \in \mathbb{Z}$ and $\mathbb{N}$.
+
+\subparagraph{} Now we prove that $(x,y,z)=((x,y),z)$ has the same size as $\mathbb{N}$. We use the same approach. 
+\begin{center}
+\begin{tabular}{ c c c }
+ ((0,0),0) & ((0,0),1) & ((0,0),-1) ...\\ 
+ ((1,0),0) & ((1,0),1) & ((1,0),-1) ...\\  
+ ((0,1),0) & ((0,1),1) & ((0,1),-1) ... \\
+ ...   & ...   & ...
+\end{tabular}
+\end{center}
+
+Now, the sequence first entry, $(x,y)$, follow the list we obtained in the previous part, and the second entry still has the same sequence. Now, any $(x,y,z),\ x,y,z \in \mathbb{Z}$, is represented by the entry on the $k$th row, $2y$th/$(2y+1)$th column (for positive/non-positive $y$), where $k$ is the natural number corresponding to $(x,y)$ in the first list. Thus, we proved there exists a bijection between $(x,y,z),\ x,y,z \in \mathbb{Z}$ and $\mathbb{N}$, thus $\{(x,y,z),\ x,y,z \in \mathbb{Z}\}$ has the same size as $\mathbb{N}$. (proven)
+
+\newpage
+
+\paragraph{Problem 2}
+\subparagraph{} 
+\textbf{Intuition}: we need to keep the functionality of the Turing Machine while find a set of operations to substitute the operation of moving the head to the left by one cell. And to achieve the same effect, we need the help of marks to indicate the position the head should go to after reset. Detailed operations are given below when the head needs to move to the left:
+\begin{itemize}
+\item Step 1: Mark the current cell, go to the first cell and mark the first cell. (initialization)
+\item Step 2: move right until we hit the first mark (the first iteration requires no right-move since we marked the first cell.) Move to the right again.
+\item Step 3: If the current cell is unmarked, we mark the current cell and reset. Move right until we hit the first mark. Unmarked it and reset. Go back to step 2. (both step 2 and 3 are loop body)
+\item Step 4: Else the current cell is marked, we know we arrive at the cell we started the operation with. Remove the mark and reset. Go right until we hit the first mark. This is the cell we want to move to (1 position to the left from the cell we start with). Unmark the cell. (end condition)
+\end{itemize}
+
+Step 3 ensures that we always have only 2 marks (1 original position and 1 current cell we are checking) in the tape. Step 4 ensures the only mark exists in the end would be our destination, and we can restore the tape to its original condition after completing the operations. The whole process can be described as: starting from the first cell, check whether the original cell(the cell we start our operations with) is on the right side of the current cell we are checking. The reason we need to maintain 2 marks is because we need to record both the original cell's position and the current cell's (that is being checked) position.
+
+\newpage
+
+\paragraph{Problem 3}
+\subparagraph{(a)} 
+Let $\mathcal{B}$ denote the given enumeration of strings in $\Sigma^*$. For each element in $\mathcal{B}$, if it is accepted by a language $L$, we record as $1$, otherwise we record as $0$. Thus, we can get an infinitely long characteristic sequence for each of the language in $\mathcal{L}$. Then we used Cantor’s Diagonalization for the enumeration of languages in $\mathcal{L}$ to get a contradiction $L^{DIAG=}L^{DIAG}_1$. We can construct $L^{DIAG}_2$ by modifying Cantor’s Diagonalization. Instead of choosing the $i$th entry of $L^{DIAG}$'s characteristic sequence to be different from $L_i$'s characteristic sequence's $i$th entry, we can construct $L^{DIAG}_2$ by choosing $(i+1)$th entry of $L^{DIAG}_2$'s characteristic sequence to be different from $L_i$'s characteristic sequence's $(i+1)$th entry. This leaves the first entry of $L^{DIAG}_2$'s characteristic sequence undecided. We intentionally choose it to be different from the first entry of $L^{DIAG}_1$'s characteristic sequence's first entry. \\~\\
+
+$L^{DIAG}_2 \not\in$ the enumeration of $\mathcal{L}$: this is because if $L^{DIAG}_2$ is the $n$th entry, that is $L^{DIAG}_2$'s characteristic sequence's $(n+1)$th entry is the same as $L_n$'s characteristic sequence's $(n+1)$th entry, which is a contradiction to our setup.  \\~\\
+
+$L^{DIAG}_2 \neq L^{DIAG}_1$: this is because of our setup, their characteristic sequences's first entries are different. \\~\\
+
+Since, by constructing $L^{DIAG}_2$, $\mathcal{L}$ is uncountable, while $\Sigma^*$ is countable due to the existence of enumeration $\mathcal{B}$, we proved $|\mathcal{L}| \neq |\Sigma^*|$.
+
+\subparagraph{(b)} 
+\textbf{Construction:} For $L^{DIAG}_i$, the $(i+j-1)$th entry of $L^{DIAG}_i$'s characteristic sequence is different from $L_j$'s characteristic sequence's $(i+j-1)$th entry. For the first $(i-1)$th entry of $L^{DIAG}_i$'s characteristic sequence, let the $j$th entry of $L^{DIAG}_i$'s characteristic sequence different from $L^{DIAG}_j$'s characteristic sequence's $j$th entry, $0 < j < i$.\\~\\
+
+We have proved the base case, when $i=1$, and $i=2$, $L^{DIAG}_i \neq L_j,\forall j$. In class/previous part, we proved $L^{DIAG}_1 \neq L^{DIAG}_2$. \\~\\
+
+Assume the claim is true for the first $k$ $L^{DIAG}_i,\ 1\leq i \leq k,\ k \in \mathbb{N}$. We take a look at the $L^{DIAG}_{k+1}$. \\~\\
+
+First, We look at its characteristic sequence's first $k$th entry, the $j$th entry of $L^{DIAG}_{k+1}$'s characteristic sequence is different from $L^{DIAG}_j$'s characteristic sequence's $j$th entry for all $0 < j < k+1$. This is because of how we construct all $L^{DIAG}_i$. Thus, we proved $L^{DIAG}_{k+1}$ is different from any previous $L^{DIAG}_i$ since their characteristic sequences are all different.\\~\\ 
+
+Then, we look at all the rest entries of its characteristic sequence. Because of how we construct $L^{DIAG}_{k+1}$, the $(k+j)$th entry of $L^{DIAG}_{k+1}$'s characteristic sequence is different from $L_j$'s characteristic sequence's $(k+j)$th entry. This makes $L^{DIAG}_{k+i} \neq L_j,\forall j$. \\~\\
+
+Since the base case is true, first $k$ claims are true $\rightarrow$ $(k+1)$th claim is true, the claim is true for all $i$. Hence we proved our construction is correct.
+
+\newpage
+
+\subparagraph{(c)} 
+\textbf{Construction:} For $L^{SUPERDIAG}$, the $i$th entry of $L^{SUPERDIAG}$'s characteristic sequence is different from $L_{(i+1)/2}$'s characteristic sequence's $i$th entry if $i$ is odd. For even $i$, the $i$th entry of $L^{SUPERDIAG}$'s characteristic sequence is different from $L^{DIAG}_{i/2}$'s characteristic sequence's $i$th entry. \\~\\
+
+$L^{SUPERDIAG} \neq L^{DIAG}_j,\forall j$: Assume not, that is, there exists some $n$ such that $L^{SUPERDIAG} = L^{DIAG}_n$. However, this contradicts our construction because their characteristic sequences are different at the $2n$th entry. \\~\\
+
+$L^{SUPERDIAG} \neq L_j,\forall j$: Assume not, that is, there exists some $n$ such that $L^{SUPERDIAG} = L_n$. However, this contradicts our construction because their characteristic sequences are different at the $(2n-1)$th entry. \\~\\
+
+Hence, we have proved the correctness of our construction of $L^{SUPERDIAG}$.
+
+\subparagraph{(d)} 
+\textbf{Construction:} For $L^{SUPERDIAG}_2$, the $i$th entry of $L^{SUPERDIAG}_2$'s characteristic sequence is different from $L_{i/2}$'s characteristic sequence's $i$th entry if $i$ is even. For odd $i$, $i>1$, the $i$th entry of $L^{SUPERDIAG}_2$'s characteristic sequence is different from $L^{DIAG}_{(i-1)/2}$'s characteristic sequence's $i$th entry. The very first entry of $L^{SUPERDIAG}_2$'s characteristic sequence is different from the first entry of $L^{SUPERDIAG}$.\\~\\
+
+$L^{SUPERDIAG}_2 \neq L^{DIAG}_j,\forall j$: Assume not, that is, there exists some $n$ such that $L^{SUPERDIAG}_2 = L^{DIAG}_n$. However, this contradicts our construction because their characteristic sequences are different at the $(2n+1)$th entry. \\~\\
+
+$L^{SUPERDIAG}_2 \neq L_j,\forall j$: Assume not, that is, there exists some $n$ such that $L^{SUPERDIAG}_2 = L_n$. However, this contradicts our construction because their characteristic sequences are different at the $2n$th entry. \\~\\
+
+$L^{SUPERDIAG}_2 \neq L^{SUPERDIAG}$: Assume not. However, this contradicts our construction because their characteristic sequences are different at the first entry. \\~\\
+
+Hence, we have proved the correctness of our construction of $L^{SUPERDIAG}_2$.
+
+\end{document}
